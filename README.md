@@ -31,6 +31,8 @@
 
 Готовые установочные пакеты лежат в каталоге `release/` после сборки:
 
+https://github.com/Serge-Nook/sharik/releases
+
 | ОС | Пакет |
 | --- | --- |
 | Windows | `Sharik-Setup-1.0.0.exe` (установщик NSIS) |
