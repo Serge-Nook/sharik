@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#23315a"/>
+      <stop offset="100%" stop-color="#0f1420"/>
+    </radialGradient>
+    <radialGradient id="balloon" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#6fa8ff"/>
+      <stop offset="55%" stop-color="#4f8cff"/>
+      <stop offset="100%" stop-color="#2f6bdf"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- string -->
+  <path d="M256 360 C 246 392, 270 410, 256 440" stroke="#8a97b3" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- balloon body -->
+  <ellipse cx="256" cy="210" rx="120" ry="148" fill="url(#balloon)"/>
+  <!-- highlight -->
+  <ellipse cx="214" cy="160" rx="34" ry="50" fill="#ffffff" opacity="0.30"/>
+  <!-- knot -->
+  <path d="M242 354 L270 354 L256 374 Z" fill="#2f6bdf"/>
+  <!-- network nodes overlay -->
+  <g fill="#ffffff" opacity="0.92">
+    <circle cx="216" cy="190" r="9"/>
+    <circle cx="296" cy="168" r="9"/>
+    <circle cx="284" cy="252" r="9"/>
+    <circle cx="212" cy="262" r="9"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="4" opacity="0.7">
+    <line x1="216" y1="190" x2="296" y2="168"/>
+    <line x1="296" y1="168" x2="284" y2="252"/>
+    <line x1="284" y1="252" x2="212" y2="262"/>
+    <line x1="212" y1="262" x2="216" y2="190"/>
+  </g>
+</svg>
