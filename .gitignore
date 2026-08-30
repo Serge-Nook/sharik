@@ -1,4 +1,9 @@
-node_modules/
 release/
 *.log
 .DS_Store
+
+# Go build artifacts
+/sharik
+/sharik.exe
+*.tar.xz
+*.exe.zip
