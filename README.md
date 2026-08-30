@@ -2,8 +2,9 @@
 
 **Шарик** — это кроссплатформенная программа для сканирования IP-адресов. Она сканирует
 заданный диапазон IPv4-адресов и показывает найденные устройства вместе с информацией о них.
+Приложение написано на чистом Go, интерфейс — нативные виджеты [Fyne](https://fyne.io).
 
-**Автор:** Горшков Сергей Владимирович
+**Автор:** Горшков Сергей Владимирович ([nookbat.ru](https://nookbat.ru/))
 
 ![Шарик](build/icon.png)
 
@@ -22,60 +23,81 @@
   - Производитель (по базе OUI, ~39 000 записей)
   - Время отклика (мс)
   - Открытые порты (опциональное сканирование портов)
+- MAC и производитель определяются и для самого компьютера, на котором запущена программа
+  (собственный адрес отсутствует в ARP-таблице, поэтому MAC берётся у локального интерфейса)
 - Настройка числа потоков и таймаутов
-- Сортировка и фильтрация результатов
-- Экспорт результатов в CSV
+- Сортировка (клик по заголовку колонки) и фильтрация результатов
+- Контекстное меню по правому клику на строке: «Скопировать IP», «Скопировать MAC»,
+  «Скопировать порты»
+- Экспорт результатов в CSV (UTF-8 с BOM)
 - Тёмный интерфейс, прогресс сканирования в реальном времени
 
-## Установка
+## Требования
 
-Готовые установочные пакеты лежат в каталоге `release/` после сборки:
+- Go 1.24 или новее
+- Fyne использует CGO (OpenGL + системный оконный слой), поэтому нужны компилятор C и
+  системные библиотеки:
 
-https://github.com/Serge-Nook/sharik/releases
-
-| ОС | Пакет |
-| --- | --- |
-| Windows | `Sharik-Setup-1.0.0.exe` (установщик NSIS) |
-| Linux (Debian/Ubuntu) | `Sharik-1.0.0.deb` |
-| Linux (Arch и др.) | `Sharik-1.0.0.AppImage` |
-
-### Windows
-Запустите `Sharik-Setup-1.0.0.exe` и следуйте указаниям мастера установки.
-
-### Debian / Ubuntu
 ```bash
-sudo apt install ./Sharik-1.0.0.deb
+# Debian / Ubuntu
+sudo apt install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev
+
+# Arch Linux
+sudo pacman -S base-devel mesa libxcursor libxrandr libxinerama libxi libxkbcommon wayland
 ```
 
-### Arch Linux / AppImage
-```bash
-chmod +x Sharik-1.0.0.AppImage
-./Sharik-1.0.0.AppImage
-```
+Для работы ping нужен системный `ping` (пакет `iputils-ping` в Debian/Ubuntu).
 
 ## Запуск из исходников
 
 ```bash
-npm install
-npm start
+go run .
 ```
 
-## Сборка пакетов
+## Сборка
 
 ```bash
-npm install
-npm run dist:linux   # .deb и .AppImage
-npm run dist:win     # .exe (требуется wine при сборке на Linux)
-npm run dist:all     # всё сразу
+# Linux
+go build -o sharik .
+
+# Windows (нативно, из Windows)
+go build -ldflags "-H windowsgui" -o sharik.exe .
 ```
 
-Готовые артефакты появятся в каталоге `release/`.
+Пакеты с иконкой и метаданными удобно собирать утилитой
+[`fyne`](https://docs.fyne.io/started/packaging):
+
+```bash
+go install fyne.io/tools/cmd/fyne@latest
+
+fyne package -os linux   -icon build/icon.png -name Шарик -app-version 2.0.0
+fyne package -os windows -icon build/icon.png -name Шарик -app-version 2.0.0
+```
+
+Кросс-сборка `.exe` из Linux требует toolchain MinGW
+(`sudo apt install gcc-mingw-w64`) — сборка идёт через CGO:
+
+```bash
+CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc \
+  go build -ldflags "-H windowsgui" -o sharik.exe .
+```
+
+База производителей `assets/oui.json` встраивается в бинарник через `//go:embed`,
+поэтому исполняемый файл самодостаточен.
+
+## Структура проекта
+
+- `main.go` — точка входа, встраивание `assets/oui.json`, создание окна
+- `ui.go`, `cell.go`, `theme.go` — интерфейс на Fyne, контекстное меню, тёмная тема
+- `internal/scanner/` — логика сканирования: разбор диапазонов, ping, TCP-порты,
+  ARP-таблица, OUI, локальные интерфейсы, экспорт CSV
 
 ## Технологии
 
-- [Electron](https://www.electronjs.org/) — кроссплатформенная оболочка
-- [electron-builder](https://www.electron.build/) — сборка установочных пакетов
-- Node.js (`child_process` ping, `net` TCP-проверка портов, `dns` обратный DNS, ARP-таблица)
+- [Go](https://go.dev/) — язык реализации
+- [Fyne](https://fyne.io/) — нативный кроссплатформенный GUI
+- Стандартная библиотека: `os/exec` (ping, `arp -a`), `net` (TCP-проверка портов,
+  обратный DNS, локальные интерфейсы), `embed` (база OUI)
 
 ## Замечание
 
