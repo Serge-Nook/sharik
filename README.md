@@ -70,8 +70,8 @@ go build -ldflags "-H windowsgui" -o sharik.exe .
 ```bash
 go install fyne.io/tools/cmd/fyne@latest
 
-fyne package -os linux   -icon build/icon.png -name Шарик -app-version 1.0.0
-fyne package -os windows -icon build/icon.png -name Шарик -app-version 1.0.0
+fyne package -os linux   -icon build/icon.png -name Шарик -app-version 2.0.0
+fyne package -os windows -icon build/icon.png -name Шарик -app-version 2.0.0
 ```
 
 Кросс-сборка `.exe` из Linux требует toolchain MinGW

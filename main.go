@@ -16,7 +16,7 @@ var ouiJSON []byte
 const (
 	appTitle   = "Шарик — сканер IP-адресов"
 	appName    = "Шарик"
-	appVersion = "1.0.0"
+	appVersion = "2.0.0"
 	appAuthor  = "Горшков Сергей Владимирович"
 	appSite    = "https://nookbat.ru/"
 )
