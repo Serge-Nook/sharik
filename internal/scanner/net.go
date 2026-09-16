@@ -48,7 +48,10 @@ func PingHost(ctx context.Context, ip string, timeout time.Duration) PingResult 
 	cmdCtx, cancel := context.WithTimeout(ctx, timeout+1500*time.Millisecond)
 	defer cancel()
 
-	out, err := exec.CommandContext(cmdCtx, "ping", args...).Output()
+	cmd := exec.CommandContext(cmdCtx, "ping", args...)
+	hideConsole(cmd)
+
+	out, err := cmd.Output()
 	if err != nil {
 		return PingResult{Time: -1}
 	}
@@ -130,7 +133,10 @@ func ArpTable() map[string]string {
 		}
 	}
 
-	out, err := exec.Command("arp", "-a").Output()
+	cmd := exec.Command("arp", "-a")
+	hideConsole(cmd)
+
+	out, err := cmd.Output()
 	if err != nil {
 		return table
 	}
